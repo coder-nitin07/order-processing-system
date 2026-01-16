@@ -1,0 +1,8 @@
+
+const ORDER_STATUS = {
+    PENDING: "PENDING",
+    CONFIRMED: "CONFIRMED",
+    CANCELLED: "CANCELLED"
+};
+
+export default ORDER_STATUS;
