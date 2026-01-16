@@ -1,13 +1,13 @@
 import express from 'express';
 import pool from '../database/postgres.js';
-import { redisClient } from '../redis/redisClient.js';
+import { connectRedis } from '../config/redis.js';
 
 const router = express.Router();
 
 router.get('/', async (req, res)=>{
     try {
         await pool.query('SELECT 1');
-        await redisClient.ping();
+        await connectRedis.ping();
 
         res.json({ 
             status: 'ok',

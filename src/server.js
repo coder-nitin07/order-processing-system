@@ -1,7 +1,7 @@
 import app from './app.js';
 import { env } from './config/env.js';
 import { connectPostgres } from './database/postgres.js';
-import { connectRedis } from './redis/redisClient.js';
+import { connectRedis } from './config/redis.js';
 
 async function startServer() {
     try {
