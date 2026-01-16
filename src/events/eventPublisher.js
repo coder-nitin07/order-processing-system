@@ -7,6 +7,10 @@ export const publishEvent = async (eventType, payload) =>{
             JSON.stringify({
                 eventType,
                 payload,
+                mets: {
+                    source: 'order-service',
+                    version: 1
+                },
                 timestamp: new Date().toISOString()
             })
         );
