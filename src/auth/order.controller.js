@@ -1,6 +1,8 @@
 import pool from '../database/postgres.js';
 import ORDER_STATUS from "../constants/orderStatus.js";
 import { createOrderSchema } from "../validators/order.validator.js";
+import { publishEvent } from '../events/eventPublisher.js';
+import { EVENT_TYPES } from "../events/eventTypes.js";
 
 // create order
 export const createOrder = async (req, res, next)=>{
@@ -31,6 +33,12 @@ export const createOrder = async (req, res, next)=>{
 
         // commit transaction
         await client.query('COMMIT');
+
+        await publishEvent(EVENT_TYPES.ORDER_CREATED, {
+            orderId: result.rows[0].id,
+            userId,
+            amount,
+        });
 
         return res.status(201).json({
             message: 'Order created successfully',
