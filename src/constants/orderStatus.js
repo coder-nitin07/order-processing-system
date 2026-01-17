@@ -1,8 +1,8 @@
 
 const ORDER_STATUS = {
     PENDING: "PENDING",
-    CONFIRMED: "CONFIRMED",
-    CANCELLED: "CANCELLED"
+    PAID: "PAID",
+    FAILED: "FAILED"
 };
 
 export default ORDER_STATUS;
