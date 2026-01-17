@@ -1,4 +1,5 @@
 import { redisSubscriber } from '../config/redis.js';
+import { emailQueue } from '../queues/email.queue.js';
 import { paymentQueue } from '../queues/payment.queue.js';
 import { EVENT_TYPES } from './eventTypes.js';
 
@@ -21,5 +22,14 @@ export const initOrderCreatedListener = async () =>{
         console.log("➡️ Next steps:");
         console.log("   - enqueue payment job");
         console.log("   - enqueue notification job");
+                
+        console.log(event);
+
+        await handleOrderCreated({
+            userEmail: "test@mailtrap.io",
+            orderId: event.payload.orderId,
+        });
+
+        console.log("➡️ Email job enqueued");
     });
 };
