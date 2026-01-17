@@ -23,13 +23,13 @@ export const initOrderCreatedListener = async () =>{
         console.log("   - enqueue payment job");
         console.log("   - enqueue notification job");
                 
-        console.log(event);
+        // console.log(event);
 
-        await handleOrderCreated({
-            userEmail: "test@mailtrap.io",
-            orderId: event.payload.orderId,
-        });
+        // await handleOrderCreated({
+        //     userEmail: "test@mailtrap.io",
+        //     orderId: event.payload.orderId,
+        // });
 
-        console.log("➡️ Email job enqueued");
+        // console.log("➡️ Email job enqueued");
     });
 };

@@ -20,8 +20,15 @@ export const paymentWorker = new Worker(
         const client = await pool.connect();
 
         try {
-            console.log("first")
             await client.query('BEGIN');
+
+
+            const { rows } = await client.query(
+                `SELECT user_id FROM orders WHERE id = $1`,
+                [orderId]
+            );
+
+            const userId = rows[0].user_id;
 
             if(isPaymentSuccessful){
                 // update order status
@@ -32,13 +39,14 @@ export const paymentWorker = new Worker(
 
                 // exit success event
                 await publishEvent(EVENT_TYPES.ORDER_PAYMENT_SUCCESS, {
+                    userId,
                     orderId,
-                    amount
+                    amount,
+                    status: ORDER_STATUS.PAID
                 });
 
                 console.log('Payment success for order: ', orderId);
             } else{
-console.log("secong")
                 // update order status failed
                 await client.query(
                     `UPDATE orders SET status = $1 WHERE id = $2`,
@@ -47,14 +55,17 @@ console.log("secong")
 
                 // emit failues event
                 await publishEvent(EVENT_TYPES.ORDER_PAYMENT_FAILED, {
+                     userId,
                     orderId,
-                    amount
+                    amount,
+                    status: ORDER_STATUS.FAILED,
                 });
 
                 console.log('Payment Failed for order', orderId);
             }
 
             await client.query('COMMIT');
+            return { success: isPaymentSuccessful };
         } catch (err) {
             await client.query('ROLLBACK');
             console.error("Worker error:", err);
@@ -62,9 +73,6 @@ console.log("secong")
         } finally{
             client.release();
         }
-
-        // placeholder logic
-        return { success: isPaymentSuccessful };
     },
     {
         connection: connectRedis
