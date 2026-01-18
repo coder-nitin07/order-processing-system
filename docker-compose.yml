@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: order_api
+    command: npm run start
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  worker:
+    build: .
+    container_name: order_worker
+    command: npm run worker
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orders_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
